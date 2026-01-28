@@ -1,8 +1,8 @@
-import { OpenAPIRegistry, OpenApiGeneratorV3 } from 'zod-to-openapi';
+import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 
 export const registry = new OpenAPIRegistry();
 
-export function generateOpenApiDocument() {
+export function generateOpenApiDocument(): unknown {
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
   return generator.generateDocument({
@@ -11,7 +11,6 @@ export function generateOpenApiDocument() {
       title: 'Inmobiliaria Digital API',
       version: '0.1.0',
     },
-    paths: {},
   });
 }
 

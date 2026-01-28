@@ -1,0 +1,377 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Inmobiliaria Digital API",
+    "version": "0.1.0"
+  },
+  "components": {
+    "schemas": {
+      "Tenant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "components": {
+            "type": "object",
+            "properties": {
+              "line1": {
+                "type": "string",
+                "minLength": 1
+              },
+              "line2": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 255
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 255
+              },
+              "country": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 2
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 32
+              },
+              "padron": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "line1",
+              "city",
+              "country"
+            ]
+          },
+          "geocode": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "lat": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "lng": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              "osmId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source": {
+                "type": "string",
+                "enum": [
+                  "OSM"
+                ],
+                "default": "OSM"
+              },
+              "confirmedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "lat",
+              "lng",
+              "osmId",
+              "confirmedAt"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "components",
+          "geocode",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Property": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "addressId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "RESIDENTIAL",
+              "COMMERCIAL",
+              "LAND",
+              "OTHER"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "ARCHIVED"
+            ]
+          },
+          "externalRef": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "addressId",
+          "type",
+          "status",
+          "externalRef",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PropertyOwnership": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "propertyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "participantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "MANAGER"
+            ]
+          },
+          "percentage": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "default": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "propertyId",
+          "participantId",
+          "role",
+          "percentage",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Tenancy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "propertyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "ENDED"
+            ]
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "propertyId",
+          "tenantId",
+          "status",
+          "startsAt",
+          "endsAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Invitation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "invitedUserId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "propertyId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "REVOKED"
+            ]
+          },
+          "targetContext": {
+            "type": "string",
+            "enum": [
+              "PROPERTY_OWNER",
+              "PROPERTY_MANAGER",
+              "TENANT"
+            ]
+          },
+          "targetContextId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "acceptedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "revokedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "invitedUserId",
+          "propertyId",
+          "status",
+          "targetContext",
+          "targetContextId",
+          "createdAt",
+          "updatedAt",
+          "acceptedAt",
+          "revokedAt"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {}
+}

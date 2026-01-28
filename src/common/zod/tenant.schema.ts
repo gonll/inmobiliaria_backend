@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { extendZodWithOpenApi } from 'zod-to-openapi';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { registry } from '../openapi/registry';
 
 extendZodWithOpenApi(z);

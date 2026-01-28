@@ -9,7 +9,7 @@ Este repo define el **núcleo de dominio y contratos** de una plataforma LegalTe
 - **PostgreSQL** como base de datos principal
 - **Prisma** para schema tipado y migraciones auditables
 - **Zod** como frontera de validación y definición de reglas de negocio
-- **zod-to-openapi** para generar OpenAPI desde los mismos schemas
+- **@asteasolutions/zod-to-openapi** para generar OpenAPI desde los schemas Zod
 - **Kubb** para generar SDKs y tipos tipados desde OpenAPI
 - **Redis + BullMQ** (planeado) para jobs diferidos (cobros, notificaciones, legales)
 - **Storage S3-compatible** para documentación con hashing

@@ -1,0 +1,3 @@
+import { _ as Param, a as Key, c as KubbFileProps, d as KubbSourceProps, f as KubbTextProps, i as ElementNames, l as KubbImportProps, m as TextNode, n as DOMNode, o as KubbElement, p as LineBreakProps, r as DOMNodeAttribute, s as KubbExportProps, t as DOMElement, u as KubbNode, v as Params } from "./types-XiObCuPy.js";
+export * from "@kubb/fabric-core/types";
+export { DOMElement, DOMNode, DOMNodeAttribute, ElementNames, Key, KubbElement, KubbExportProps, KubbFileProps, KubbImportProps, KubbNode, KubbSourceProps, KubbTextProps, LineBreakProps, Param, Params, TextNode };

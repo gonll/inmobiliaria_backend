@@ -1,0 +1,4 @@
+import "./types-XiObCuPy.js";
+import { n as reactPlugin } from "./reactPlugin-CVS9VJ5P.js";
+export * from "@kubb/fabric-core/plugins";
+export { reactPlugin };

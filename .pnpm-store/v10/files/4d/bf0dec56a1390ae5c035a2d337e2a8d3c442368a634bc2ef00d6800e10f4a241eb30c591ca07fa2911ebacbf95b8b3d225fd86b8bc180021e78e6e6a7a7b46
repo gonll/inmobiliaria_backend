@@ -1,0 +1,14 @@
+import { C as UserParser, N as __name, S as Parser } from "./Fabric-yRxItrhk.cjs";
+import { typescriptParser } from "./parsers/typescript.cjs";
+
+//#region src/parsers/defaultParser.d.ts
+declare const defaultParser: Parser<[], any>;
+//#endregion
+//#region src/parsers/defineParser.d.ts
+declare function defineParser<TOptions = unknown, TMeta extends object = any>(parser: UserParser<TOptions, TMeta>): Parser<TOptions, TMeta>;
+//#endregion
+//#region src/parsers/tsxParser.d.ts
+declare const tsxParser: Parser<[], any>;
+//#endregion
+export { defaultParser, defineParser, tsxParser, typescriptParser };
+//# sourceMappingURL=parsers.d.cts.map

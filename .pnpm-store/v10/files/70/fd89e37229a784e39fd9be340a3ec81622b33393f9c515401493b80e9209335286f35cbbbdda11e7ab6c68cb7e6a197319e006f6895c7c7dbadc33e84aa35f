@@ -1,0 +1,9 @@
+
+
+var _kubb_core = require("@kubb/core");
+Object.keys(_kubb_core).forEach(function (k) {
+  if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
+    enumerable: true,
+    get: function () { return _kubb_core[k]; }
+  });
+});

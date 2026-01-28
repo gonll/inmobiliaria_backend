@@ -1,0 +1,3 @@
+import { n as reactPlugin } from "./reactPlugin-EQOIOEA2.cjs";
+export * from "@kubb/fabric-core/plugins";
+export { reactPlugin };

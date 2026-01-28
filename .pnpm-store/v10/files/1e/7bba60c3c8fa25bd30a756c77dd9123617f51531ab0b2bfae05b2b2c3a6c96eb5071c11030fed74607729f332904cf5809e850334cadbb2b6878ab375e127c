@@ -1,0 +1,22 @@
+import { b as __name, c as KubbFileProps, d as KubbSourceProps, f as KubbTextProps, l as KubbImportProps, o as KubbElement, p as LineBreakProps, s as KubbExportProps, u as KubbNode } from "./types-J_S-h-Ae.cjs";
+import React from "react";
+
+//#region src/globals.d.ts
+declare global {
+  namespace JSX {
+    type Element = KubbElement;
+    interface ElementClass extends React.ComponentClass<any> {
+      render(): KubbNode;
+    }
+    interface IntrinsicElements {
+      'kubb-text': KubbTextProps;
+      'kubb-file': KubbFileProps;
+      'kubb-source': KubbSourceProps;
+      'kubb-import': KubbImportProps;
+      'kubb-export': KubbExportProps;
+      br: LineBreakProps;
+      indent: {};
+      dedent: {};
+    }
+  }
+}

@@ -1,0 +1,15 @@
+import { n as __name } from "./chunk-Cq_TCZj9.js";
+import { C as UserParser, S as Parser } from "./Fabric-dUuj_QO6.js";
+import { typescriptParser } from "./parsers/typescript.js";
+
+//#region src/parsers/defaultParser.d.ts
+declare const defaultParser: Parser<[], any>;
+//#endregion
+//#region src/parsers/defineParser.d.ts
+declare function defineParser<TOptions = unknown, TMeta extends object = any>(parser: UserParser<TOptions, TMeta>): Parser<TOptions, TMeta>;
+//#endregion
+//#region src/parsers/tsxParser.d.ts
+declare const tsxParser: Parser<[], any>;
+//#endregion
+export { defaultParser, defineParser, tsxParser, typescriptParser };
+//# sourceMappingURL=parsers.d.ts.map

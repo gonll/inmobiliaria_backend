@@ -1,0 +1,345 @@
+import { n as __name } from "./chunk-Cq_TCZj9.js";
+import { A as Path, D as File$1, M as Source, O as Import, T as Export, _ as inject, b as FileManager, c as FabricOptions, d as renderIndent, f as renderIntrinsic, g as createContext, h as Context, j as ResolvedFile, n as FabricComponent, p as RenderContext, r as FabricConfig, s as FabricNode, t as Fabric, v as provide, w as BaseName, x as FileProcessor, y as unprovide } from "./Fabric-dUuj_QO6.js";
+import { n as useNodeTree, r as TreeNode, t as ComponentNode } from "./useNodeTree-vLaKh36n.js";
+import { n as RootContext, t as JSDoc } from "./types-_X71gVe5.js";
+
+//#region src/createComponent.d.ts
+type MakeChildrenOptional<T extends object> = T extends {
+  children?: any;
+} ? Omit<T, 'children'> & Partial<Pick<T, 'children'>> : T;
+type ComponentBuilder<T extends object> = {
+  (...args: unknown extends T ? [] : {} extends Omit<T, 'children'> ? [props?: MakeChildrenOptional<T>] : [props: MakeChildrenOptional<T>]): FabricComponent<T>;
+  displayName?: string | undefined;
+};
+declare function createComponent<TProps extends object>(type: string, Component: (props: TProps) => FabricNode): ComponentBuilder<TProps>;
+//#endregion
+//#region src/components/App.d.ts
+type AppProps<TMeta extends Object = Object> = {
+  /**
+   * Metadata associated with the App.
+   */
+  meta?: TMeta;
+  /**
+   * Children nodes.
+   */
+  children?: FabricNode;
+};
+/**
+ * App container containing the AppContext carrying `meta` and an `exit` hook.
+ */
+declare const App: ComponentBuilder<AppProps<Object>>;
+//#endregion
+//#region src/components/Br.d.ts
+/**
+ * Generates a line break in the output.
+ */
+declare const Br: ComponentBuilder<object>;
+//#endregion
+//#region src/components/Const.d.ts
+type ConstProps = {
+  /**
+   * Name of the const
+   */
+  name: string;
+  /**
+   * Does this type need to be exported.
+   */
+  export?: boolean;
+  /**
+   * Type to make the const being typed
+   */
+  type?: string;
+  /**
+   * Options for JSdocs.
+   */
+  JSDoc?: JSDoc;
+  /**
+   * Use of `const` assertions
+   */
+  asConst?: boolean;
+  /**
+   * Children nodes.
+   */
+  children?: FabricNode;
+};
+/**
+ * Generates a TypeScript constant declaration.
+ */
+declare const Const: ComponentBuilder<ConstProps>;
+//#endregion
+//#region src/components/Dedent.d.ts
+/**
+ * Dedent component for reducing indentation level in rendered output.
+ */
+declare const Dedent: ComponentBuilder<object>;
+//#endregion
+//#region src/components/File.d.ts
+type FileProps<TMeta extends object = object> = {
+  /**
+   * Name to be used to dynamically create the baseName(based on input.path).
+   * Based on UNIX basename
+   * @link https://nodejs.org/api/path.html#pathbasenamepath-suffix
+   */
+  baseName: BaseName;
+  /**
+   * Path will be full qualified path to a specified file.
+   */
+  path: Path;
+  meta?: TMeta;
+  banner?: string;
+  footer?: string;
+  /**
+   * Children nodes.
+   */
+  children?: FabricNode;
+};
+/**
+ * Adds files to the FileManager
+ */
+declare const File: ComponentBuilder<FileProps<object>> & {
+  Source: typeof FileSource;
+  Import: typeof FileImport;
+  Export: typeof FileExport;
+};
+type FileSourceProps = Omit<Source, 'value'> & {
+  /**
+   * Children nodes.
+   */
+  children?: FabricNode;
+};
+/**
+ * FileSource - for adding source code to a file
+ *
+ * Returns the provided children string so the fsx renderer can collect it.
+ */
+declare const FileSource: ComponentBuilder<FileSourceProps>;
+/**
+ * FileExport - for adding exports to a file
+ *
+ * No-op function used by renderers to record exports.
+ */
+declare const FileExport: ComponentBuilder<Export>;
+/**
+ * FileImport - for adding imports to a file
+ *
+ * No-op function used by renderers to record imports.
+ */
+declare const FileImport: ComponentBuilder<Import>;
+//#endregion
+//#region src/components/Function.d.ts
+type FunctionProps = {
+  /**
+   * Name of the function.
+   */
+  name: string;
+  /**
+   * Add default when export is being used
+   */
+  default?: boolean;
+  /**
+   * Parameters/options/props that need to be used.
+   */
+  params?: string;
+  /**
+   * Does this function need to be exported.
+   */
+  export?: boolean;
+  /**
+   * Does the function has async/promise behaviour.
+   * This will also add `Promise<returnType>` as the returnType.
+   */
+  async?: boolean;
+  /**
+   * Generics that needs to be added for TypeScript.
+   */
+  generics?: string | string[];
+  /**
+   * ReturnType(see async for adding Promise type).
+   */
+  returnType?: string;
+  /**
+   * Options for JSdocs.
+   */
+  JSDoc?: JSDoc;
+  /**
+   * Children nodes.
+   */
+  children?: FabricNode;
+};
+/**
+ * Generates a TypeScript function declaration.
+ */
+declare const Function: ComponentBuilder<FunctionProps> & {
+  Arrow: typeof ArrowFunction;
+};
+type ArrowFunctionProps = FunctionProps & {
+  /**
+   * Create Arrow function in one line
+   */
+  singleLine?: boolean;
+};
+/**
+ * ArrowFunction
+ *
+ * Builds an arrow function declaration string for the fsx renderer. Supports
+ * the same options as `Function`. Use `singleLine` to produce a one-line
+ * arrow expression.
+ */
+declare const ArrowFunction: ComponentBuilder<ArrowFunctionProps>;
+//#endregion
+//#region src/components/Indent.d.ts
+declare const Indent: ComponentBuilder<object>;
+//#endregion
+//#region src/components/Root.d.ts
+type RootProps = {
+  /**
+   * Exit (unmount) the whole app.
+   */
+  onExit: (error?: Error) => void;
+  /**
+   * Error hook receiving runtime exceptions.
+   */
+  onError: (error: Error) => void;
+  /**
+   * TreeNode representing the tree structure of the app.
+   */
+  treeNode: TreeNode<ComponentNode>;
+  /**
+   * FileManager instance for managing files within the app.
+   */
+  fileManager: FileManager;
+  /**
+   * Children nodes.
+   */
+  children?: FabricNode;
+};
+/**
+ * This component provides the root behavior for the Fabric runtime.
+ */
+declare const Root: ComponentBuilder<RootProps>;
+//#endregion
+//#region src/components/Type.d.ts
+type TypeProps = {
+  /**
+   * Name of the type, this needs to start with a capital letter.
+   */
+  name: string;
+  /**
+   * Does this type need to be exported.
+   */
+  export?: boolean;
+  /**
+   * Options for JSdocs.
+   */
+  JSDoc?: JSDoc;
+  /**
+   * Children nodes.
+   */
+  children?: FabricNode;
+};
+/**
+ * Generates a TypeScript type declaration.
+ */
+declare const Type: ComponentBuilder<TypeProps>;
+//#endregion
+//#region src/contexts/AppContext.d.ts
+type AppContextProps<TMeta extends object = object> = {
+  /**
+   * Exit (unmount)
+   */
+  exit: (error?: Error) => void;
+  meta: TMeta;
+};
+/**
+ * Provides app-level metadata and lifecycle hooks (like `exit`) to
+ * components and composables within a Fabric runtime.
+ */
+declare const AppContext: Context<AppContextProps<object>>;
+//#endregion
+//#region src/composables/useApp.d.ts
+/**
+ * `useApp` will return the current App with meta and exit function.
+ *
+ * Throws an error when there is no AppContext available.
+ */
+declare function useApp<TMeta extends object = object>(): AppContextProps<TMeta>;
+//#endregion
+//#region src/composables/useContext.d.ts
+/**
+ * React-style alias for inject
+ *
+ * @example
+ * ```ts
+ * const theme = useContext(ThemeContext) // type is inferred from ThemeContext
+ * ```
+ */
+declare function useContext<T>(key: Context<T>): T;
+declare function useContext<T, TValue = T>(key: Context<T>, defaultValue: TValue): NonNullable<T> | TValue;
+//#endregion
+//#region src/composables/useFile.d.ts
+/**
+ * `useFile` will return the current FileCollector for registering files.
+ *
+ * Throws when no FileCollector is present in context — ensure a Fabric that
+ * provides a FileCollector is mounted before calling this hook.
+ */
+declare function useFile(): ResolvedFile | null;
+//#endregion
+//#region src/composables/useFileManager.d.ts
+declare function useFileManager(): FileManager;
+//#endregion
+//#region src/composables/useLifecycle.d.ts
+/**
+ * `useLifecycle` will return some helpers to exit/restart the generation.
+ *
+ * This hook reads the RootContext and exposes lifecycle helpers (like `exit`)
+ * for consumers to programmatically stop generation or perform teardown.
+ */
+declare function useLifecycle(): {
+  exit: (error?: Error) => void;
+};
+//#endregion
+//#region src/contexts/FileContext.d.ts
+/**
+ * Provides app-level metadata and lifecycle hooks (like `exit`) to
+ * components and composables within a Fabric runtime.
+ */
+declare const FileContext: Context<ResolvedFile<object> | null>;
+//#endregion
+//#region src/contexts/NodeTreeContext.d.ts
+/**
+ * Context for having the current NodeTree
+ */
+declare const NodeTreeContext: Context<TreeNode<ComponentNode> | null>;
+//#endregion
+//#region src/createFabric.d.ts
+/**
+ * Creates a new Fabric instance
+ *
+ * @example
+ * const fabric = createFabric()
+ * fabric.use(myPlugin())
+ */
+declare function createFabric<T extends FabricOptions>(config?: FabricConfig<T>): Fabric<T>;
+//#endregion
+//#region src/createFile.d.ts
+/**
+ * Helper to create a file with name and id set
+ */
+declare function createFile<TMeta extends object = object>(file: File$1<TMeta>): ResolvedFile<TMeta>;
+//#endregion
+//#region src/utils/createJSDoc.d.ts
+/**
+ * Create JSDoc comment block from comments array
+ */
+declare function createJSDoc({
+  comments
+}: {
+  comments: string[];
+}): string;
+//#endregion
+//#region src/utils/getRelativePath.d.ts
+declare function getRelativePath(rootDir?: string | null, filePath?: string | null, platform?: 'windows' | 'mac' | 'linux'): string;
+//#endregion
+export { App, AppContext, Br, Const, Dedent, type Fabric, File, FileContext, FileManager, FileProcessor, Function, Indent, NodeTreeContext, RenderContext, Root, RootContext, TreeNode, Type, createComponent, createContext, createFabric, createFile, createJSDoc, getRelativePath, inject, provide, renderIndent, renderIntrinsic, unprovide, useApp, useContext, useFile, useFileManager, useLifecycle, useNodeTree };
+//# sourceMappingURL=index.d.ts.map

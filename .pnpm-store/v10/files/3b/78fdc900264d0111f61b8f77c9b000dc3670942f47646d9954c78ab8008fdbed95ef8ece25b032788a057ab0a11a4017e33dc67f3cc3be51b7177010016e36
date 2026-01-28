@@ -1,0 +1,13 @@
+import { r as __name } from "./chunk-CrnDzoTS.js";
+import { o as KubbElement, u as KubbNode } from "./types-XiObCuPy.js";
+import { t as JSX } from "./jsx-namespace-fB1bxOIg.js";
+import * as react0 from "react";
+import * as React$1 from "react/jsx-dev-runtime";
+
+//#region src/jsx-dev-runtime.d.ts
+declare const Fragment: react0.ExoticComponent<react0.FragmentProps>;
+declare const jsxDEV: typeof React$1.jsxDEV;
+type JSXElement = KubbElement;
+type ReactNode = KubbNode;
+//#endregion
+export { Fragment, JSX, JSXElement, ReactNode, jsxDEV };

@@ -1,0 +1,6 @@
+//#region package.json
+var version = "4.19.2";
+
+//#endregion
+export { version as t };
+//# sourceMappingURL=package-B9X6myLt.js.map

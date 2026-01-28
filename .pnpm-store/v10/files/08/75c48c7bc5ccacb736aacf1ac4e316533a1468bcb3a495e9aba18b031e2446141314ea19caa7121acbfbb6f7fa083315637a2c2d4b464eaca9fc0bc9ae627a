@@ -1,0 +1,72 @@
+{
+  "name": "kubb",
+  "version": "3.0.195",
+  "description": "Transform OpenAPI specifications into TypeScript, React-Query, Zod, Faker.js, MSW and more with a plugin-based code generation tool.",
+  "keywords": [
+    "typescript",
+    "openapi",
+    "swagger",
+    "code-generator",
+    "codegen",
+    "plugins",
+    "react-query",
+    "zod",
+    "msw",
+    "faker",
+    "api-client",
+    "kubb"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kubb-labs/kubb.git",
+    "directory": "packages/kubb"
+  },
+  "license": "MIT",
+  "author": "stijnvanhulle",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "bin": {
+    "kubb": "bin/kubb.js"
+  },
+  "files": [
+    "src",
+    "dist",
+    "bin",
+    "!/**/**.test.**",
+    "!/**/__tests__/**"
+  ],
+  "dependencies": {
+    "@kubb/cli": "4.19.2",
+    "@kubb/core": "4.19.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20"
+  },
+  "preferGlobal": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "clean": "npx rimraf ./dist",
+    "lint": "bun biome lint .",
+    "lint:fix": "bun biome lint --fix --unsafe .",
+    "release": "pnpm publish --no-git-check",
+    "release:canary": "bash ../../.github/canary.sh && node ../../scripts/build.js canary && pnpm publish --no-git-check",
+    "start": "tsdown --watch",
+    "test": "vitest --passWithNoTests",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit --emitDeclarationOnly false"
+  }
+}

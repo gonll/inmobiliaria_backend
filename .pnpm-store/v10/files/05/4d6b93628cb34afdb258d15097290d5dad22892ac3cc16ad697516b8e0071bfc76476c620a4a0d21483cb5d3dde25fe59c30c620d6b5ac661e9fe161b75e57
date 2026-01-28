@@ -1,0 +1,20 @@
+const require_getRelativePath = require('./getRelativePath-jYLCpluV.cjs');
+const require_defaultParser = require('./defaultParser-2ym3KiZd.cjs');
+const require_typescriptParser = require('./typescriptParser-3Mjce6yD.cjs');
+
+//#region src/parsers/tsxParser.ts
+const tsxParser = require_getRelativePath.defineParser({
+	name: "tsx",
+	extNames: [".tsx", ".jsx"],
+	install() {},
+	async parse(file, options = { extname: ".tsx" }) {
+		return require_typescriptParser.typescriptParser.parse(file, options);
+	}
+});
+
+//#endregion
+exports.defaultParser = require_defaultParser.defaultParser;
+exports.defineParser = require_getRelativePath.defineParser;
+exports.tsxParser = tsxParser;
+exports.typescriptParser = require_typescriptParser.typescriptParser;
+//# sourceMappingURL=parsers.cjs.map

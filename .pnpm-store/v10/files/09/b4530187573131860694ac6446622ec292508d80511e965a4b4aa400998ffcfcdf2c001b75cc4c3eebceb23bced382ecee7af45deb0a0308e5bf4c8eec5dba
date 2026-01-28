@@ -1,0 +1,7 @@
+import "./react-Cfp4vMID.js";
+import "./jsx-runtime-CpElaHq6.js";
+import { t as reactPlugin } from "./reactPlugin-CwuxUcyY.js";
+
+export * from "@kubb/fabric-core/plugins"
+
+export { reactPlugin };

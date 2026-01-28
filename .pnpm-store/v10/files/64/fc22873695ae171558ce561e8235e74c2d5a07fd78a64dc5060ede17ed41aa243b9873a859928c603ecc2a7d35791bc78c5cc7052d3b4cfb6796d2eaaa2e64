@@ -1,0 +1,43 @@
+import { t as __name } from "./chunk-jHaXqnEa.js";
+import { t as version } from "./package-B9X6myLt.js";
+import { defineCommand, runCommand, runMain } from "citty";
+
+//#region src/index.ts
+const main = defineCommand({
+	meta: {
+		name: "kubb",
+		version,
+		description: "Kubb generation"
+	},
+	args: { version: {
+		type: "boolean",
+		alias: "v",
+		description: "Show version number"
+	} },
+	async setup({ rawArgs, args }) {
+		if (args.version) {
+			console.log(version);
+			process.exit(0);
+		}
+		if (![
+			"generate",
+			"validate",
+			"mcp"
+		].includes(rawArgs[0])) {
+			await runCommand(await import("./generate-Bk5zJn43.js").then((r) => r.default), { rawArgs });
+			process.exit(0);
+		}
+	},
+	subCommands: {
+		generate: () => import("./generate-Bk5zJn43.js").then((r) => r.default),
+		validate: () => import("./validate-BQJ4DDaA.js").then((r) => r.default),
+		mcp: () => import("./mcp-D7dx28gT.js").then((r) => r.default)
+	}
+});
+async function run(_argv) {
+	await runMain(main);
+}
+
+//#endregion
+export { run };
+//# sourceMappingURL=index.js.map

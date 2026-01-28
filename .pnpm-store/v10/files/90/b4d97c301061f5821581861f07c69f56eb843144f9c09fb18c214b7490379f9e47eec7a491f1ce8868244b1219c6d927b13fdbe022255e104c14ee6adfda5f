@@ -1,0 +1,20 @@
+const require_getRelativePath = require('./getRelativePath-jYLCpluV.cjs');
+
+//#region src/parsers/defaultParser.ts
+const defaultParser = require_getRelativePath.defineParser({
+	name: "default",
+	extNames: [".json"],
+	install() {},
+	async parse(file) {
+		return file.sources.map((item) => item.value).join("\n\n");
+	}
+});
+
+//#endregion
+Object.defineProperty(exports, 'defaultParser', {
+  enumerable: true,
+  get: function () {
+    return defaultParser;
+  }
+});
+//# sourceMappingURL=defaultParser-2ym3KiZd.cjs.map

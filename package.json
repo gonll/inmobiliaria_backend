@@ -1,0 +1,56 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "db:reset": "prisma migrate reset --force --skip-generate",
+    "openapi:generate": "ts-node src/common/openapi/generate.ts",
+    "kubb:generate": "kubb --config kubb.config.ts",
+    "types:generate": "pnpm prisma:generate && pnpm openapi:generate && pnpm kubb:generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gonll/inmobiliaria_backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gonll/inmobiliaria_backend/issues"
+  },
+  "homepage": "https://github.com/gonll/inmobiliaria_backend#readme",
+  "packageManager": "pnpm@10.19.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.975.0",
+    "@nestjs/common": "^11.1.12",
+    "@nestjs/core": "^11.1.12",
+    "@nestjs/platform-express": "^11.1.12",
+    "@prisma/client": "^7.3.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.3",
+    "dotenv": "^17.2.3",
+    "pg": "^8.17.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6",
+    "zod-to-openapi": "^0.2.1"
+  },
+  "devDependencies": {
+    "@kubb/swagger": "^2.28.4",
+    "@nestjs/cli": "^11.0.16",
+    "@types/node": "^25.0.10",
+    "kubb": "^3.0.195",
+    "prisma": "^7.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

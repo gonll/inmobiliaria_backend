@@ -1,0 +1,500 @@
+const require_getRelativePath = require('./getRelativePath-jYLCpluV.cjs');
+const require_Root = require('./Root-DvQofGOy.cjs');
+const require_typescriptParser = require('./typescriptParser-3Mjce6yD.cjs');
+let remeda = require("remeda");
+
+//#region src/composables/useContext.ts
+function useContext(key, defaultValue) {
+	return require_Root.inject(key, defaultValue);
+}
+
+//#endregion
+//#region src/composables/useNodeTree.ts
+function useNodeTree() {
+	return useContext(require_Root.NodeTreeContext);
+}
+
+//#endregion
+//#region src/contexts/AppContext.ts
+/**
+* Provides app-level metadata and lifecycle hooks (like `exit`) to
+* components and composables within a Fabric runtime.
+*/
+const AppContext = require_Root.createContext({
+	exit: () => {},
+	meta: {}
+});
+
+//#endregion
+//#region src/components/App.ts
+/**
+* App container containing the AppContext carrying `meta` and an `exit` hook.
+*/
+const App = require_Root.createComponent("App", ({ children, ...props }) => {
+	const { meta = {} } = props;
+	const { exit } = useContext(require_Root.RootContext);
+	const nodeTree = useNodeTree();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "App",
+		props
+	}));
+	require_Root.provide(AppContext, {
+		exit,
+		meta
+	});
+	return children;
+});
+App.displayName = "KubbApp";
+
+//#endregion
+//#region src/components/Br.ts
+/**
+* Generates a line break in the output.
+*/
+const Br = require_Root.createComponent("br", () => {
+	return require_Root.createIntrinsic("br");
+});
+Br.displayName = "Br";
+
+//#endregion
+//#region src/utils/createJSDoc.ts
+/**
+* Create JSDoc comment block from comments array
+*/
+function createJSDoc({ comments }) {
+	if (!comments || comments.length === 0) return "";
+	const lines = comments.flatMap((c) => String(c !== null && c !== void 0 ? c : "").split(/\r?\n/)).map((l) => l.replace(/\*\//g, "*\\/").replace(/\r/g, "")).filter((l) => l.trim().length > 0);
+	if (lines.length === 0) return "";
+	return [
+		"/**",
+		...lines.map((l) => ` * ${l}`),
+		" */"
+	].join("\n");
+}
+
+//#endregion
+//#region src/components/Const.ts
+/**
+* Generates a TypeScript constant declaration.
+*/
+const Const = require_Root.createComponent("Const", ({ children, ...props }) => {
+	const { name, export: canExport, type, JSDoc, asConst } = props;
+	const nodeTree = useNodeTree();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "Const",
+		props
+	}));
+	let result = "";
+	if (JSDoc === null || JSDoc === void 0 ? void 0 : JSDoc.comments) {
+		result += createJSDoc({ comments: JSDoc.comments });
+		result += "\n";
+	}
+	if (canExport) result += "export ";
+	result += `const ${name}`;
+	if (type) result += `: ${type}`;
+	result += ` = ${children ? children : ""}`;
+	if (asConst) result += " as const";
+	return result;
+});
+Const.displayName = "KubbConst";
+
+//#endregion
+//#region src/components/Dedent.ts
+/**
+* Dedent component for reducing indentation level in rendered output.
+*/
+const Dedent = require_Root.createComponent("dedent", () => {
+	return require_Root.createIntrinsic("dedent");
+});
+Dedent.displayName = "Dedent";
+
+//#endregion
+//#region src/contexts/FileContext.ts
+/**
+* Provides app-level metadata and lifecycle hooks (like `exit`) to
+* components and composables within a Fabric runtime.
+*/
+const FileContext = require_Root.createContext(null);
+
+//#endregion
+//#region src/composables/useFile.ts
+/**
+* `useFile` will return the current FileCollector for registering files.
+*
+* Throws when no FileCollector is present in context — ensure a Fabric that
+* provides a FileCollector is mounted before calling this hook.
+*/
+function useFile() {
+	return useContext(FileContext);
+}
+
+//#endregion
+//#region src/composables/useFileManager.ts
+function useFileManager() {
+	const { fileManager } = useContext(require_Root.RootContext);
+	return fileManager;
+}
+
+//#endregion
+//#region src/components/File.ts
+/**
+* Adds files to the FileManager
+*/
+const File = require_Root.createComponent("File", ({ children, ...props }) => {
+	const { baseName, path, meta = {}, footer, banner } = props;
+	const fileManager = useFileManager();
+	const nodeTree = useNodeTree();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "File",
+		props
+	}));
+	const file = {
+		baseName,
+		path,
+		meta,
+		banner,
+		footer,
+		sources: [],
+		imports: [],
+		exports: []
+	};
+	const [resolvedFile] = fileManager.add(file);
+	require_Root.provide(FileContext, resolvedFile);
+	return children;
+});
+/**
+* FileSource - for adding source code to a file
+*
+* Returns the provided children string so the fsx renderer can collect it.
+*/
+const FileSource = require_Root.createComponent("FileSource", ({ children, ...props }) => {
+	const { name, isExportable, isIndexable, isTypeOnly } = props;
+	const nodeTree = useNodeTree();
+	const file = useFile();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "FileSource",
+		props
+	}));
+	const value = require_Root.renderIntrinsic(children);
+	if (file) file.sources.push({
+		name,
+		isExportable,
+		isIndexable,
+		isTypeOnly,
+		value
+	});
+	return value;
+});
+/**
+* FileExport - for adding exports to a file
+*
+* No-op function used by renderers to record exports.
+*/
+const FileExport = require_Root.createComponent("FileExport", (props) => {
+	const { name, path, isTypeOnly, asAlias } = props;
+	const nodeTree = useNodeTree();
+	const file = useFile();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "FileExport",
+		props
+	}));
+	if (file) file.exports.push({
+		name,
+		path,
+		asAlias,
+		isTypeOnly
+	});
+	return require_typescriptParser.print(require_typescriptParser.createExport({
+		name,
+		path,
+		isTypeOnly,
+		asAlias
+	}));
+});
+/**
+* FileImport - for adding imports to a file
+*
+* No-op function used by renderers to record imports.
+*/
+const FileImport = require_Root.createComponent("FileImport", (props) => {
+	const { name, path, root, isNameSpace, isTypeOnly } = props;
+	const nodeTree = useNodeTree();
+	const file = useFile();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "FileImport",
+		props
+	}));
+	if (file) file.imports.push({
+		name,
+		path,
+		root,
+		isNameSpace,
+		isTypeOnly
+	});
+	return require_typescriptParser.print(require_typescriptParser.createImport({
+		name,
+		path,
+		root,
+		isNameSpace,
+		isTypeOnly
+	}));
+});
+File.Source = FileSource;
+File.Import = FileImport;
+File.Export = FileExport;
+
+//#endregion
+//#region src/components/Indent.ts
+const Indent = require_Root.createComponent("indent", () => {
+	return require_Root.createIntrinsic("indent");
+});
+Indent.displayName = "Indent";
+
+//#endregion
+//#region src/components/Function.ts
+/**
+* Generates a TypeScript function declaration.
+*/
+const Function = require_Root.createComponent("Function", ({ children, ...props }) => {
+	const { name, default: isDefault, export: canExport, async, generics, params, returnType, JSDoc } = props;
+	const nodeTree = useNodeTree();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "Function",
+		props
+	}));
+	const parts = [];
+	if (JSDoc === null || JSDoc === void 0 ? void 0 : JSDoc.comments) {
+		parts.push(createJSDoc({ comments: JSDoc.comments }));
+		parts.push("\n");
+	}
+	if (canExport) parts.push("export ");
+	if (isDefault) parts.push("default ");
+	if (async) parts.push("async ");
+	parts.push(`function ${name}`);
+	if (generics) {
+		parts.push("<");
+		parts.push(Array.isArray(generics) ? generics.join(", ").trim() : generics);
+		parts.push(">");
+	}
+	parts.push(`(${params || ""})`);
+	if (returnType && !async) parts.push(`: ${returnType}`);
+	if (returnType && async) parts.push(`: Promise<${returnType}>`);
+	parts.push(" {");
+	if (children) return [
+		parts.join(""),
+		Br(),
+		Indent(),
+		children,
+		Br(),
+		Dedent(),
+		"}"
+	];
+	return [parts.join(""), "}"];
+});
+Function.displayName = "KubbFunction";
+/**
+* ArrowFunction
+*
+* Builds an arrow function declaration string for the fsx renderer. Supports
+* the same options as `Function`. Use `singleLine` to produce a one-line
+* arrow expression.
+*/
+const ArrowFunction = require_Root.createComponent("ArrowFunction", ({ children, ...props }) => {
+	const { name, default: isDefault, export: canExport, async, generics, params, returnType, JSDoc, singleLine } = props;
+	const nodeTree = useNodeTree();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "ArrowFunction",
+		props
+	}));
+	const parts = [];
+	if (JSDoc === null || JSDoc === void 0 ? void 0 : JSDoc.comments) {
+		parts.push(createJSDoc({ comments: JSDoc.comments }));
+		parts.push("\n");
+	}
+	if (canExport) parts.push("export ");
+	if (isDefault) parts.push("default ");
+	parts.push(`const ${name} = `);
+	if (async) parts.push("async ");
+	if (generics) {
+		parts.push("<");
+		parts.push(Array.isArray(generics) ? generics.join(", ").trim() : generics);
+		parts.push(">");
+	}
+	parts.push(`(${params || ""})`);
+	if (returnType && !async) parts.push(`: ${returnType}`);
+	if (returnType && async) parts.push(`: Promise<${returnType}>`);
+	if (singleLine) {
+		parts.push(` => ${children || ""}\n`);
+		return parts.join("");
+	}
+	if (children) return [
+		parts.join(""),
+		" => {",
+		Br(),
+		Indent(),
+		children,
+		Br(),
+		Dedent(),
+		"}"
+	];
+	return [parts.join(""), " => {}"];
+});
+ArrowFunction.displayName = "KubbArrowFunction";
+Function.Arrow = ArrowFunction;
+
+//#endregion
+//#region src/components/Type.ts
+/**
+* Generates a TypeScript type declaration.
+*/
+const Type = require_Root.createComponent("Type", ({ children, ...props }) => {
+	const { name, export: canExport, JSDoc } = props;
+	const nodeTree = useNodeTree();
+	if (nodeTree) require_Root.provide(require_Root.NodeTreeContext, nodeTree.addChild({
+		type: "Type",
+		props
+	}));
+	if (name.charAt(0).toUpperCase() !== name.charAt(0)) throw new Error("Name should start with a capital letter (see TypeScript types)");
+	let result = "";
+	if (JSDoc === null || JSDoc === void 0 ? void 0 : JSDoc.comments) {
+		result += createJSDoc({ comments: JSDoc.comments });
+		result += "\n";
+	}
+	if (canExport) result += "export ";
+	result += `type ${name} = ${children || ""}`;
+	return result;
+});
+Type.displayName = "KubbType";
+
+//#endregion
+//#region src/composables/useApp.ts
+/**
+* `useApp` will return the current App with meta and exit function.
+*
+* Throws an error when there is no AppContext available.
+*/
+function useApp() {
+	return useContext(AppContext);
+}
+
+//#endregion
+//#region src/composables/useLifecycle.ts
+/**
+* `useLifecycle` will return some helpers to exit/restart the generation.
+*
+* This hook reads the RootContext and exposes lifecycle helpers (like `exit`)
+* for consumers to programmatically stop generation or perform teardown.
+*/
+function useLifecycle() {
+	const { exit } = useContext(require_Root.RootContext);
+	return { exit };
+}
+
+//#endregion
+//#region src/createFabric.ts
+/**
+* Creates a new Fabric instance
+*
+* @example
+* const fabric = createFabric()
+* fabric.use(myPlugin())
+*/
+function createFabric(config = { mode: "sequential" }) {
+	const events = new require_Root.AsyncEventEmitter();
+	const installedPlugins = /* @__PURE__ */ new Set();
+	const installedParsers = /* @__PURE__ */ new Map();
+	const installedParserNames = /* @__PURE__ */ new Set();
+	const fileManager = new require_Root.FileManager({ events });
+	const context = {
+		get files() {
+			return fileManager.files;
+		},
+		async addFile(...files) {
+			await fileManager.add(...files);
+		},
+		config,
+		fileManager,
+		installedPlugins,
+		installedParsers,
+		on: events.on.bind(events),
+		off: events.off.bind(events),
+		onOnce: events.onOnce.bind(events),
+		removeAll: events.removeAll.bind(events),
+		emit: events.emit.bind(events)
+	};
+	const fabric = {
+		context,
+		get files() {
+			return fileManager.files;
+		},
+		async addFile(...files) {
+			await fileManager.add(...files);
+		},
+		async upsertFile(...files) {
+			await fileManager.upsert(...files);
+		},
+		async use(pluginOrParser, ...options) {
+			if (pluginOrParser.type === "plugin") {
+				if (installedPlugins.has(pluginOrParser)) console.warn(`Plugin "${pluginOrParser.name}" already applied.`);
+				else installedPlugins.add(pluginOrParser);
+				if ((0, remeda.isFunction)(pluginOrParser.inject)) {
+					const injecter = pluginOrParser.inject;
+					const injected = injecter(context, ...options);
+					Object.assign(fabric, injected);
+				}
+			}
+			if (pluginOrParser.type === "parser") {
+				if (installedParserNames.has(pluginOrParser.name)) console.warn(`Parser "${pluginOrParser.name}" already applied.`);
+				else installedParserNames.add(pluginOrParser.name);
+				if (pluginOrParser.extNames) for (const extName of pluginOrParser.extNames) {
+					const existing = installedParsers.get(extName);
+					if (existing && existing.name !== pluginOrParser.name) console.warn(`Parser "${pluginOrParser.name}" is overriding parser "${existing.name}" for extension "${extName}".`);
+					installedParsers.set(extName, pluginOrParser);
+				}
+			}
+			if ((0, remeda.isFunction)(pluginOrParser.install)) {
+				const installer = pluginOrParser.install;
+				await installer(context, ...options);
+			}
+			return fabric;
+		}
+	};
+	return fabric;
+}
+
+//#endregion
+exports.App = App;
+exports.AppContext = AppContext;
+exports.Br = Br;
+exports.Const = Const;
+exports.Dedent = Dedent;
+exports.File = File;
+exports.FileContext = FileContext;
+exports.FileManager = require_Root.FileManager;
+exports.FileProcessor = require_Root.FileProcessor;
+exports.Function = Function;
+exports.Indent = Indent;
+exports.NodeTreeContext = require_Root.NodeTreeContext;
+exports.RenderContext = require_Root.RenderContext;
+exports.Root = require_Root.Root;
+exports.RootContext = require_Root.RootContext;
+exports.TreeNode = require_Root.TreeNode;
+exports.Type = Type;
+exports.createComponent = require_Root.createComponent;
+exports.createContext = require_Root.createContext;
+exports.createFabric = createFabric;
+exports.createFile = require_Root.createFile;
+exports.createJSDoc = createJSDoc;
+exports.getRelativePath = require_getRelativePath.getRelativePath;
+exports.inject = require_Root.inject;
+exports.provide = require_Root.provide;
+exports.renderIndent = require_Root.renderIndent;
+exports.renderIntrinsic = require_Root.renderIntrinsic;
+exports.unprovide = require_Root.unprovide;
+exports.useApp = useApp;
+exports.useContext = useContext;
+exports.useFile = useFile;
+exports.useFileManager = useFileManager;
+exports.useLifecycle = useLifecycle;
+exports.useNodeTree = useNodeTree;
+//# sourceMappingURL=index.cjs.map

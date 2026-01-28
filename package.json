@@ -14,7 +14,7 @@
     "db:reset": "prisma migrate reset --force --skip-generate",
     "openapi:generate": "ts-node src/common/openapi/generate.ts",
     "kubb:generate": "kubb --config kubb.config.ts",
-    "types:generate": "pnpm prisma:generate && pnpm openapi:generate && pnpm kubb:generate"
+    "pipeline:generate": "pnpm openapi:generate && pnpm kubb:generate && pnpm prisma:migrate:dev"
   },
   "repository": {
     "type": "git",

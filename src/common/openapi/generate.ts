@@ -4,6 +4,7 @@ import { generateOpenApiDocument } from './registry';
 
 // Import all Zod schemas so they are registered in the OpenAPI registry
 import '../zod/tenant.schema';
+import '../zod/domain.schema';
 
 async function main() {
   const document = generateOpenApiDocument();
